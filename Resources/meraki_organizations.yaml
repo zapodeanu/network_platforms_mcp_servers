@@ -1,0 +1,13 @@
+
+# meraki_organizations.yaml
+# Multi-organization Meraki configuration
+
+meraki_organizations:
+  - name: "Production"
+    api_key_env: "MERAKI_PROD_API_KEY"
+    description: "Production environment networks"
+    enabled: true
+  - name: "Lab"
+    api_key_env: "MERAKI_LAB_API_KEY"
+    description: "Development and testing networks"
+    enabled: true

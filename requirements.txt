@@ -1,0 +1,11 @@
+requests
+urllib3
+mcp
+catalystcentersdk
+python-dotenv
+PyYAML
+httpx
+sentence-transformers
+numpy
+scikit-learn
+pydantic

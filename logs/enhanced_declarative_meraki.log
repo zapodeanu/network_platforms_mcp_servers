@@ -1,0 +1,14 @@
+2025-11-10 15:22:10,032 - PID:73941 - INFO - ================================================================================
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Enhanced Declarative Meraki Server with Complete API Explorer Started
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Process ID: 73941
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Meraki Base URL: https://api.meraki.com/api/v1
+2025-11-10 15:22:10,032 - PID:73941 - INFO - ================================================================================
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Initializing Enhanced Declarative Meraki Server...
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Loading Meraki API keys from environment...
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Successfully loaded 0 Meraki API keys
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Loading Meraki organizations configuration...
+2025-11-10 15:22:10,032 - PID:73941 - WARNING - Organizations config file not found: /Users/gzapodea/Code/network_platforms_mcp_servers/Resources/meraki_organizations.yaml
+2025-11-10 15:22:10,032 - PID:73941 - INFO - Attempting to auto-detect single organization setup...
+2025-11-10 15:22:10,032 - PID:73941 - ERROR - No Meraki API keys found in environment
+2025-11-10 15:22:10,032 - PID:73941 - ERROR - No Meraki organizations configured. Please check your API keys and configuration.
+2025-11-10 15:22:10,032 - PID:73941 - ERROR - Server crashed: No Meraki organizations available. Check API keys and configuration.

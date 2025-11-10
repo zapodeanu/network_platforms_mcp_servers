@@ -1,0 +1,7 @@
+2025-11-10 15:22:08,009 - PID:73935 - INFO - ================================================================================
+2025-11-10 15:22:08,009 - PID:73935 - INFO - Enhanced Catalyst Center Server with Complete API Explorer Started
+2025-11-10 15:22:08,009 - PID:73935 - INFO - Process ID: 73935
+2025-11-10 15:22:08,009 - PID:73935 - INFO - CC URL: None
+2025-11-10 15:22:08,009 - PID:73935 - INFO - ================================================================================
+2025-11-10 15:22:08,009 - PID:73935 - INFO - Initializing Enhanced Declarative Catalyst Server...
+2025-11-10 15:22:08,009 - PID:73935 - ERROR - Server crashed: Missing required Catalyst Center credentials

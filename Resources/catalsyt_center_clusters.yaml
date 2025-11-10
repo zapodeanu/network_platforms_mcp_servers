@@ -1,0 +1,15 @@
+
+# catalyst_center_clusters.yaml
+# Multi-cluster Catalyst Center configuration
+
+catalyst_centers:
+  - name: "Portland"
+    host: "Portland-center.domain.com"
+    version: "2.3.7.10"
+    location: "Portland"
+    enabled: true
+  - name: "San Jose"
+    host: "SanJose-catalyst.domain.com"
+    version: "2.3.7.9"
+    location: "San Jose"
+    enabled: false

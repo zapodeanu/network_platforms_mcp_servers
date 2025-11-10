@@ -1,0 +1,219 @@
+# meraki_config.yaml
+# Declarative configuration in logical sequence
+
+base_url: "https://api.meraki.com/api/v1"
+
+tools:
+  # STEP 0: Discovery - Find configured organizations
+  - name: get_configured_organizations
+    description: "🔍 DISCOVERY TOOL: Lists YOUR configured organizations from meraki_organizations.yaml (Prod, Lab, etc). Use this FIRST to discover which organizations are available before calling other tools. Does NOT call Meraki API."
+    endpoint: "not_used"
+    method: GET
+    parameters: {}
+
+  # STEP 1: Get Meraki API organization details
+  - name: list_organizations_details
+    description: "📡 MERAKI API TOOL: Calls Meraki API to get organization details (IDs, names, URLs). REQUIRES organization parameter ('Prod', 'Lab', or 'all'). Use get_configured_organizations first to see available options."
+    endpoint: "organizations"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod', 'Lab', or 'all'). Get available names from get_configured_organizations tool first."
+        required: true
+        location: special
+
+  # STEP 2: Get networks for organization
+  - name: list_networks
+    description: "📋 List all networks in a Meraki organization. REQUIRES organization parameter ('Prod', 'Lab', or 'all')."
+    endpoint: "organizations/{organization_id}/networks"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod', 'Lab', or 'all'). Networks are organization-specific."
+        required: true
+        location: special
+      organization_id:
+        type: string
+        description: "Auto-resolved from organization parameter - do not specify manually"
+        required: false
+        location: path
+
+  # STEP 3: Get network details
+  - name: get_network
+    description: "🔍 Get detailed information about a specific network. REQUIRES organization parameter matching where the network_id came from."
+    endpoint: "networks/{network_id}"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod' or 'Lab') where this network exists. Use the same org you used to discover the network_id."
+        required: true
+        location: special
+      network_id:
+        type: string
+        description: "Network ID from list_networks (e.g., 'L_123456789')"
+        required: true
+        location: path
+
+  # STEP 4: Get devices in a network
+  - name: list_devices
+    description: "🖥️ List all devices in a network. REQUIRES organization parameter matching where the network_id came from."
+    endpoint: "networks/{network_id}/devices"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod' or 'Lab') where this network exists. Must match the org used to get network_id."
+        required: true
+        location: special
+      network_id:
+        type: string
+        description: "Network ID from list_networks"
+        required: true
+        location: path
+
+  # STEP 5: Client tools
+  - name: get_network_clients
+    description: "👥 List all clients connected to a network. REQUIRES organization parameter."
+    endpoint: "networks/{network_id}/clients"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod' or 'Lab')"
+        required: true
+        location: special
+      network_id:
+        type: string
+        description: "Network ID from list_networks"
+        required: true
+        location: path
+      timespan:
+        type: integer
+        description: "Time range in seconds (default: 86400 = 1 day, max: 2678400 = 31 days)"
+        required: false
+        location: query
+      perPage:
+        type: integer
+        description: "Entries per page returned (range: 3-5000, default: 10 - recommend 1000 for complete results)"
+        required: false
+        default: 1000
+        location: query
+        minimum: 3
+        maximum: 5000
+      startingAfter:
+        type: string
+        description: "Pagination token for next page (use from previous response Link header)"
+        required: false
+        location: query
+      endingBefore:
+        type: string
+        description: "Pagination token for previous page (use from previous response Link header)"
+        required: false
+        location: query
+      statuses:
+        type: array
+        description: "Filter by connection status: ['Online'], ['Offline'], or ['Online','Offline']"
+        required: false
+        location: query
+        items:
+          type: string
+          enum: [ "Online", "Offline" ]
+      recentDeviceConnections:
+        type: array
+        description: "Filter by connection type: ['Wired'], ['Wireless'], or ['Wired','Wireless']"
+        required: false
+        location: query
+        items:
+          type: string
+          enum: [ "Wired", "Wireless" ]
+      ip:
+        type: string
+        description: "Filter by IP address (partial or full match)"
+        required: false
+        location: query
+      mac:
+        type: string
+        description: "Filter by MAC address (partial or full match)"
+        required: false
+        location: query
+      description:
+        type: string
+        description: "Filter by device description (partial or full match)"
+        required: false
+        location: query
+      vlan:
+        type: string
+        description: "Filter by VLAN number (full match)"
+        required: false
+        location: query
+      os:
+        type: string
+        description: "Filter by operating system (partial or full match)"
+        required: false
+        location: query
+
+  - name: get_device_clients
+    description: "👥 List clients connected to a specific device. REQUIRES organization parameter."
+    endpoint: "devices/{serial}/clients"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod' or 'Lab')"
+        required: true
+        location: special
+      serial:
+        type: string
+        description: "Device serial number from list_devices"
+        required: true
+        location: path
+      timespan:
+        type: integer
+        description: "Time range in seconds (default: 3600 = 1 hour)"
+        required: false
+        location: query
+
+  - name: get_client_details
+    description: "🔍 Get detailed information about a specific client. REQUIRES organization parameter."
+    endpoint: "networks/{network_id}/clients/{client_id}"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod' or 'Lab')"
+        required: true
+        location: special
+      client_id:
+        type: string
+        description: "Client MAC address (from get_network_clients or get_device_clients)"
+        required: true
+        location: path
+      network_id:
+        type: string
+        description: "Network ID"
+        required: true
+        location: path
+
+  - name: search_client_by_mac
+    description: "🔎 Search for client by MAC address across all networks in an organization. REQUIRES organization parameter."
+    endpoint: "organizations/{organization_id}/clients/search"
+    method: GET
+    parameters:
+      organization:
+        type: string
+        description: "REQUIRED: Organization name ('Prod' or 'Lab') to search within"
+        required: true
+        location: special
+      mac:
+        type: string
+        description: "Client MAC address (any format: aa:bb:cc:dd:ee:ff or aabbccddeeff)"
+        required: true
+        location: query
+      organization_id:
+        type: string
+        description: "Auto-resolved from organization parameter"
+        required: false
+        location: path

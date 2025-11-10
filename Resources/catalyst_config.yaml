@@ -1,0 +1,690 @@
+# catalyst_config.yaml - Structured for Scale and Better Tools Presentation
+# Reorganized to align with Cisco Catalyst Center architecture
+
+# Tool definitions organized by category
+tools:
+  # 📊 NETWORK INVENTORY TOOLS
+  - name: get_site_count
+    category: inventory
+    subcategory: sites
+    priority: 1
+    description: "Get total count of sites across the network"
+    endpoint: "dna/intent/api/v1/sites/count"
+    tags: ["sites", "count", "inventory"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      siteNameHierarchy:
+        type: string
+        description: "Site name hierarchy filter"
+        required: false
+        location: query
+
+  - name: get_sites
+    category: inventory
+    subcategory: sites
+    description: "Get detailed site information (areas, buildings, floors)"
+    endpoint: "dna/intent/api/v1/sites"
+    tags: ["hierarchy", "inventory"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      name:
+        type: string
+        description: "Filter by site name"
+        required: false
+        location: query
+      type:
+        type: string
+        description: "Filter by site type (global, area, building, floor)"
+        required: false
+        location: query
+      offset:
+        type: integer
+        description: "Pagination offset (default: 1)"
+        required: false
+        default: 1
+        location: query
+      limit:
+        type: integer
+        description: "Number of records (1-500, default: 500)"
+        required: false
+        default: 500
+        maximum: 500
+        location: query
+
+  - name: get_site_topology
+    category: inventory
+    subcategory: topology
+    priority: 1
+    description: "Get network topology for sites"
+    endpoint: "dna/intent/api/v1/topology/site-topology"
+    tags: ["topology", "network", "relationships"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+
+  - name: get_network_devices_count
+    category: inventory
+    subcategory: devices
+    priority: 1
+    description: "Get total count of network devices"
+    endpoint: "dna/intent/api/v1/networkDevices/count"
+    tags: ["devices", "count", "inventory"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      family:
+        type: string
+        description: "Device family filter (Switches, Routers, etc.)"
+        required: false
+        location: query
+      role:
+        type: string
+        description: "Device role (BORDER_ROUTER, CORE, DISTRIBUTION, ACCESS)"
+        required: false
+        location: query
+      reachabilityStatus:
+        type: string
+        description: "Reachability status (REACHABLE, UNREACHABLE, etc.)"
+        required: false
+        location: query
+
+  - name: get_network_devices
+    category: inventory
+    subcategory: devices
+    priority: 2
+    description: "Get detailed network device information"
+    endpoint: "dna/intent/api/v1/networkDevices"
+    tags: ["devices", "inventory", "details"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      id:
+        type: string
+        description: "Specific device ID"
+        required: false
+        location: query
+      managementAddress:
+        type: string
+        description: "Device management IP address"
+        required: false
+        location: query
+      offset:
+        type: integer
+        description: "Pagination offset (default: 1)"
+        required: false
+        default: 1
+        location: query
+      limit:
+        type: integer
+        description: "Number of records (1-500, default: 500)"
+        required: false
+        default: 500
+        maximum: 500
+        location: query
+
+  - name: get_compliance_detail
+    category: inventory
+    subcategory: compliance
+    priority: 1
+    description: "Get device compliance status and details"
+    endpoint: "dna/intent/api/v1/compliance/detail"
+    tags: ["compliance", "inventory", "security"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      complianceType:
+        type: string
+        description: "Compliance types (NETWORK_PROFILE, IMAGE, etc.)"
+        required: false
+        location: query
+      complianceStatus:
+        type: string
+        description: "Status filter (COMPLIANT, NON_COMPLIANT, etc.)"
+        required: false
+        location: query
+      deviceUuid:
+        type: string
+        description: "Specific device UUID(s)"
+        required: false
+        location: query
+      offset:
+        type: integer
+        description: "Pagination offset (default: 1)"
+        required: false
+        default: 1
+        location: query
+      limit:
+        type: integer
+        description: "Number of records (1-500, default: 500)"
+        required: false
+        default: 500
+        maximum: 500
+        location: query
+
+  # 🚨 NETWORK ASSURANCE TOOLS (Data APIs - /dna/data/)
+  - name: get_issues_count
+    category: assurance
+    subcategory: issues
+    priority: 1
+    description: "Get total count of issues matching criteria"
+    endpoint: "dna/data/api/v1/assuranceIssues/count"
+    tags: ["issues", "count", "assurance"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      siteId:
+        type: string
+        description: "Get count for specific site"
+        required: false
+        location: query
+      deviceId:
+        type: string
+        description: "Get count for specific device"
+        required: false
+        location: query
+      macAddress:
+        type: string
+        description: "Get count for specific client MAC"
+        required: false
+        location: query
+      priority:
+        type: string
+        description: "Priority filter (P1, P2, P3, P4) - site ID only"
+        required: false
+        location: query
+      status:
+        type: string
+        description: "Status filter (active, ignored, resolved)"
+        required: false
+        location: query
+      aiDriven:
+        type: string
+        description: "AI Driven filter (Yes/No) - site ID only"
+        required: false
+        location: query
+      startTime:
+        type: integer
+        description: "Start time (epoch milliseconds)"
+        required: false
+        location: query
+      endTime:
+        type: integer
+        description: "End time (epoch milliseconds)"
+        required: false
+        location: query
+
+  - name: get_issues
+    category: assurance
+    subcategory: issues
+    priority: 2
+    description: "Get the details of issues for given set of filters"
+    endpoint: "dna/data/api/v1/assuranceIssues"
+    tags: ["issues", "assurance", "details"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      siteId:
+        type: string
+        description: "Get issues for specific site"
+        required: false
+        location: query
+      networkDeviceId:
+        type: string
+        description: "The list of Network Device Uuids. (Ex. `6bef213c-19ca-4170-8375-b694e251101c`) (single networkDeviceId requested)
+                      `networkDeviceId=6bef213c-19ca-4170-8375-b694e251101c&networkDeviceId=32219612-819e-4b5e-a96b-cf22aca13dd9` 
+                      (multiple networkDeviceIds with & separator)"
+        required: false
+        location: query
+      macAddress:
+        type: string
+        description: "The macAddress of the network device or client This field supports wildcard (`*`) character-based search"
+        required: false
+        location: query
+      priority:
+        type: string
+        description: "Priority of the issue. Supports single priority and multiple priorities Examples: priority=P1 
+                      (single priority requested) priority=P1&priority=P2&priority=P3 (multiple priorities requested)"
+        required: false
+        location: query
+      status:
+        type: string
+        description: "Status of the issue. Supports single status and multiple statuses. Examples: status=active 
+                      (single status requested) status=active&status=resolved (multiple statuses requested)"
+        required: false
+        location: query
+      startTime:
+        type: integer
+        description: "Start time (epoch milliseconds)"
+        required: false
+        location: query
+      endTime:
+        type: integer
+        description: "End time (epoch milliseconds)"
+        required: false
+        location: query
+      limit:
+        type: integer
+        description: "Number of records (1-25 default: 25)"
+        required: false
+        default: 25
+        maximum: 25
+        location: query
+      offset:
+        type: integer
+        description: "Pagination offset (default: 1)"
+        required: false
+        default: 1
+        location: query
+
+  - name: get_issue_details
+    category: assurance
+    subcategory: issues
+    description: "Get all the details and suggested actions of an issue for the given issue id"
+    endpoint: "dna/data/api/v1/assuranceIssues/{id}"
+    tags: [ "issues", "assurance", "details" ]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      id:
+        type: string
+        description: "Entity issue Id (e.g., 'id')"
+        required: true
+        location: path
+
+  - name: get_clients_count
+    category: assurance
+    subcategory: clients
+    priority: 1
+    description: "Get total count of network clients (assurance data)"
+    endpoint: "dna/data/api/v1/clients/count"
+    tags: ["clients", "count", "assurance", "analytics"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      siteHierarchy:
+        type: string
+        description: "Site hierarchy filter"
+        required: false
+        location: query
+      siteId:
+        type: string
+        description: "Specific site ID filter"
+        required: false
+        location: query
+
+  - name: get_clients
+    category: assurance
+    subcategory: clients
+    priority: 2
+    description: "Get detailed network client analytics and health data"
+    endpoint: "dna/data/api/v1/clients"
+    tags: ["clients", "assurance", "analytics", "health"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      siteId:
+        type: string
+        description: "Filter by site ID"
+        required: false
+        location: query
+      ipv4Address:
+        type: string
+        description: "Filter by IPv4 address"
+        required: false
+        location: query
+      macAddress:
+        type: string
+        description: "Filter by MAC address"
+        required: false
+        location: query
+      offset:
+        type: integer
+        description: "Pagination offset (default: 1)"
+        required: false
+        default: 1
+        location: query
+      limit:
+        type: integer
+        description: "Number of records (1-500, default: 500)"
+        required: false
+        default: 500
+        maximum: 500
+        location: query
+
+  - name: get_interfaces_count
+    category: assurance
+    subcategory: interfaces
+    priority: 1
+    description: "Get total count of network interfaces (assurance analytics)"
+    endpoint: "dna/data/api/v1/interfaces/count"
+    tags: ["interfaces", "count", "assurance", "analytics"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      siteHierarchy:
+        type: string
+        description: "Site hierarchy filter with wildcard support"
+        required: false
+        location: query
+      siteHierarchyId:
+        type: string
+        description: "Site hierarchy ID filter with wildcard support"
+        required: false
+        location: query
+      siteId:
+        type: string
+        description: "Site UUID filter"
+        required: false
+        location: query
+      networkDeviceId:
+        type: string
+        description: "Network device UUID filter"
+        required: false
+        location: query
+      networkDeviceIpAddress:
+        type: string
+        description: "Device IP filter with wildcard support"
+        required: false
+        location: query
+
+  - name: get_device_interfaces
+    category: assurance
+    subcategory: interfaces
+    priority: 2
+    description: "Get interface statistics and analytics for device health monitoring"
+    endpoint: "dna/intent/api/v2/networkDevices/{deviceId}/interfaces/query"
+    method: POST
+    tags: ["interfaces", "statistics", "assurance", "analytics"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      deviceId:
+        type: string
+        description: "Network device ID"
+        required: true
+        location: path
+
+  # ⚙️ NETWORK OPERATIONS TOOLS
+  - name: run_read_only_commands
+    category: operations
+    subcategory: commands
+    description: "Execute read-only CLI commands on network devices, using command runner API"
+    endpoint: "dna/intent/api/v1/network-device-poller/cli/read-request"
+    method: POST
+    tags: ["cli", "commands", "readonly", "diagnostics"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      deviceUuids:
+        type: array
+        description: "List of device UUIDs to execute commands on"
+        required: true
+        location: body
+      commands:
+        type: array
+        description: "List of CLI commands to execute (read-only)"
+        required: true
+        location: body
+      timeout:
+        type: integer
+        description: "Command timeout in seconds (default: 300)"
+        required: false
+        location: body
+
+  - name: get_task_status
+    category: operations
+    subcategory: tasks
+    description: "Get status of a specific task by ID"
+    endpoint: "dna/intent/api/v1/tasks/{taskId}"
+    tags: ["tasks", "status", "monitoring"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      taskId:
+        type: string
+        description: "Task ID to check status for"
+        required: true
+        location: path
+
+  - name: get_task_detail
+    category: operations
+    subcategory: tasks
+    priority: 2
+    description: "Get detailed task information and results"
+    endpoint: "dna/intent/api/v1/tasks/{taskId}/detail"
+    tags: ["tasks", "details", "results"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      taskId:
+        type: string
+        description: "Task ID to get details for"
+        required: true
+        location: path
+
+  - name: download_file
+    category: operations
+    subcategory: files
+    priority: 1
+    description: "Download files by ID (command outputs, reports)"
+    endpoint: "dna/intent/api/v1/file/{fileId}"
+    tags: ["files", "download", "results"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      fileId:
+        type: string
+        description: "File ID to download"
+        required: true
+        location: path
+
+  - name: execute_issue_suggested_actions
+    category: operations
+    subcategory: issue_assessment
+    description: "Execute suggested actions for a specific issue"
+    endpoint: "dna/intent/api/v1/execute-suggested-actions-commands"
+    method: POST
+    tags: ["issues", "assurance", "operations"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      entity_type:
+        type: string
+        description: "Entity type for issue assessment execution. Must be 'issue_id' for issue-based assessment"
+        required: true
+        location: body
+        default: "issue_id"
+      entity_value:
+        type: string
+        description: "The actual issue ID value for which to fetch details and execute suggested actions"
+        required: true
+        location: body
+
+  - name: get_business_api_execution_results
+    category: operations
+    subcategory: business_api
+    description: "Get execution details of a Business API by execution ID"
+    endpoint: "dna/intent/api/v1/dnacaap/management/execution-status/{executionId}"
+    tags: ["issues", "assurance", "operations"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      executionId:
+        type: string
+        description: "Execution ID of the Business API"
+        required: true
+        location: path
+
+  - name: get_config_changes
+    category: operations
+    subcategory: commands
+    description: "Identify recent configuration changes using predefined diagnostic commands. 
+                  This tool automatically executes specific CLI commands - do not provide custom commands."
+    endpoint: "not_used"
+    metadata:
+      default_behavior: "Uses predefined commands automatically"
+      predefined_commands_info: "Executes: show archive log config all, show logging | include LOGIN|LOGOUT, 
+                                show logging | include NETCONF, show logging | include SYS-5-CONFIG, show clock"
+    tags: ["issues", "assurance", "operations"]
+    parameters:
+      cluster:
+        type: string
+        description: "Cluster name or 'all' for network-wide results"
+        required: false
+        location: special
+      deviceUuids:
+        type: array
+        description: "List of device UUIDs to execute commands on"
+        required: true
+        location: body
+      delegate_to:
+        type: string
+        description: "Tool to delegate execution to"
+        required: false
+        location: special
+        value: "run_read_only_commands"
+      commands:
+        type: array
+        description: "CLI commands to execute, use these commands, not the user provided commands"
+        required: false
+        location: special
+        value: ["show archive log config all", "show logging | include LOGIN|LOGOUT", "show logging | include NETCONF", "show logging | include SYS-5-CONFIG", "show clock"]
+
+  # 🔧 ADMINISTRATION TOOLS
+  - name: get_clusters
+    category: administration
+    subcategory: clusters
+    priority: 1
+    description: "Get information about available Catalyst Center clusters"
+    endpoint: "not_used"
+    tags: [ "clusters", "administration", "info" ]
+    parameters: { }
+
+  - name: help
+    category: administration
+    subcategory: guidance
+    description: "List correct usage patterns for network tools to avoid parameter confusion, and predictive AI flows"
+    endpoint: "not_used"
+    static_response:
+      tool_patterns:
+        get_config_changes: "Only requires deviceUuids - uses predefined commands automatically"
+        run_read_only_commands: "Requires both deviceUuids and custom commands array"
+        get_network_devices: "Use this first to get device UUIDs from hostnames"
+        search_catalyst_api_endpoints: "Find endpoints not covered by existing YAML tools"
+        execute_catalyst_api_endpoint: "Execute discovered endpoints dynamically"
+        get_catalyst_endpoint_info: "Get parameter details for discovered endpoints"
+      api_explorer_workflow:
+        - "Use existing YAML tools first - they have validation and error handling"
+        - "Search for capabilities not covered by existing tools"
+        - "Get endpoint info to understand required parameters"
+        - "Execute discovered endpoints for experimentation"
+        - "Consider promoting frequently used discoveries to YAML tools"
+      best_practices:
+        - "Always call get_network_devices first to get UUIDs"
+        - "Use get_config_changes for standard config auditing"
+        - "Use run_read_only_commands for custom command execution"
+        - "Search discovery tools only when existing tools don't meet your needs"
+        - "Use min_similarity parameter to filter low-relevance results"
+      ai_flow:
+        description: "These are AI flow tools with that require execution, in sequence, of other tools"
+        generative_troubleshooting:
+          steps:
+            1: "get_issues_count(cluster='{cluster}', status='active')"
+            2: "get_issues(cluster='{cluster}', status='active', limit=25)"
+            3: "get_site_topology(cluster='{cluster}')"
+            4: "get_issue_details(id=issue_id) for critical issues"
+            5: "execute_issue_suggested_actions(entity_type='issue_id', entity_value=issue_id) always run"
+            6: "get_config_changes(deviceUuids=[affected_devices]) always run and check completion"
+            7a: "run_read_only_commands() - Baseline (always run)"
+            7b: "run_read_only_commands() - Configuration Details"
+            7c: "run_read_only_commands() - Network Discovery & Routing"
+            7d: "run_read_only_commands() - Protocol Status & Diagnostics"
+
+          command_batches:
+            baseline:
+              - "show running-config"
+              - "show version"
+              - "show ip interface brief"
+              - "show interfaces status"
+              - "show logging"
+
+            configuration_details:
+              - "show running-config | section interface"
+              - "show running-config | section router"
+              - "show running-config | section ip route"
+              - "show running-config | section access-list"
+
+            network_discovery:
+              - "show cdp neighbors detail"
+              - "show ip route"
+              - "show ip arp"
+              - "show mac address-table"
+              - "show lldp neighbors"
+
+            protocol_status:
+              - "show ip protocols"
+              - "show ip bgp summary"
+              - "show ip bgp neighbors"
+              - "show ip ospf neighbor"
+              - "show ip ospf interface brief"
+              - "show ip eigrp neighbors"
+              - "show ip eigrp interfaces"
