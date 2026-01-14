@@ -208,7 +208,10 @@ class MerakiOrganizationManager:
 
             async def get_org_name():
                 url = f"{MERAKI_BASE_URL}/organizations"
-                headers = {"X-Cisco-Meraki-API-Key": api_key}
+                headers = {
+                    "X-Cisco-Meraki-API-Key": api_key,
+                    "User-Agent": "gz-mcp"
+                }
 
                 async with httpx.AsyncClient(timeout=10.0) as client:
                     response = await client.get(url, headers=headers)
@@ -1249,7 +1252,8 @@ class EnhancedMultiOrgMerakiServer:
 
             headers = {
                 "X-Cisco-Meraki-API-Key": api_key,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": "gz-mcp"
             }
 
             start_time = datetime.now()
@@ -1398,7 +1402,8 @@ class EnhancedMultiOrgMerakiServer:
                     url = f"{self.config['base_url']}/organizations"
                     headers = {
                         "X-Cisco-Meraki-API-Key": api_key,
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "User-Agent": "gz-mcp"
                     }
 
                     async with httpx.AsyncClient(verify=True, timeout=30.0) as client:
@@ -1532,7 +1537,7 @@ class EnhancedMultiOrgMerakiServer:
                     if name in ["list_networks", "search_client_by_mac"]:
                         # Get organization details to find the org ID
                         org_url = f"{self.config['base_url']}/organizations"
-                        headers = {"X-Cisco-Meraki-API-Key": api_key, "Content-Type": "application/json"}
+                        headers = {"X-Cisco-Meraki-API-Key": api_key, "Content-Type": "application/json", "User-Agent": "gz-mcp"}
 
                         async with httpx.AsyncClient(verify=True, timeout=30.0) as client:
                             org_response = await client.get(org_url, headers=headers)
@@ -1580,7 +1585,8 @@ class EnhancedMultiOrgMerakiServer:
                     # Make API call
                     headers = {
                         "X-Cisco-Meraki-API-Key": api_key,
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "User-Agent": "gz-mcp"
                     }
 
                     http_method = tool_config.get("method", "GET").upper()
