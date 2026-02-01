@@ -2,6 +2,25 @@
 
 This project is an open-source, published as is. It is not intended to be used in production.
 
+### Learning Progression Servers
+The following three servers demonstrate MCP development from simple to multi-organization patterns:
+### Basic Meraki MCP Server (`basic_meraki_mcp_server.py`)
+- **Purpose**: Minimal single-tool MCP server example for learning MCP fundamentals
+- **Features**: Single tool (`list_organizations_details`) with one API key, no parameters required
+- **Use Case**: Starting point for understanding MCP server structure, tool registration, and API integration
+
+### Foundation Meraki MCP Server (`foundation_meraki_mcp_server.py`)
+- **Purpose**: Introductory multi-tool MCP server with basic Meraki API coverage
+- **Features**: Two tools (organizations and networks), single API key, parameter handling with required inputs
+- **Use Case**: Demonstrates tool chaining — use organization details to discover org IDs, then pass them to list networks
+
+### Multi-Org Meraki MCP Server (`multiorg_meraki_mcp_server.py`)
+- **Purpose**: Multi-organization Meraki MCP server with YAML-driven org configuration
+- **Features**: Three tools including a discovery tool, support for multiple orgs (Prod, Lab, or all), external org config via `meraki_organizations.yaml`
+- **Use Case**: Shows how to scale MCP servers across multiple environments with per-org API keys and an "all" aggregation pattern
+
+### Proof-of-Concepts Servers
+The following two proof-of-concepts servers demonstrate auto-generation of MCP tools and management of multiple Catalyst Center Clusters and multiple Meraki Organizations
 ### Meraki MCP Server (`enhanced_declarative_meraki.py`)
 - **Purpose**: Cisco Meraki cloud-managed network automation
 - **Features**: Multi-organization support, device management, client tracking, network configuration
