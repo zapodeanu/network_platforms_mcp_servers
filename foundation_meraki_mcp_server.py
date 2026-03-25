@@ -36,6 +36,7 @@ load_dotenv(os.path.join(PATH, 'environment.env'))
 # Meraki API Key
 MERAKI_API_KEY = os.getenv('MERAKI_API_KEY')
 MERAKI_BASE_URL = "https://api.meraki.com/api/v1"
+USER_AGENT = "gz-mcp"
 
 
 # Create new foundation MCP server, with the provided name
@@ -86,7 +87,8 @@ async def call_tool(tool_name: str, arguments: dict):
     """
     headers = {
         'X-Cisco-Meraki-API-Key': MERAKI_API_KEY,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': USER_AGENT
     }
 
     async with httpx.AsyncClient() as client:

@@ -50,6 +50,7 @@ load_dotenv(os.path.join(PATH, 'environment.env'))
 MERAKI_PROD_API_KEY = os.getenv('MERAKI_PROD_API_KEY')
 MERAKI_LAB_API_KEY = os.getenv('MERAKI_LAB_API_KEY')
 MERAKI_BASE_URL = "https://api.meraki.com/api/v1"
+USER_AGENT = "gz-mcp"
 
 # Ensure logs directory exists
 os.makedirs(f"{PATH}/logs", exist_ok=True)
@@ -222,7 +223,8 @@ class MerakiOrganizationManager:
 
             async def get_org_name():
                 url = f"{MERAKI_BASE_URL}/organizations"
-                headers = {"X-Cisco-Meraki-API-Key": api_key}
+                headers = {"X-Cisco-Meraki-API-Key": api_key,
+                           "User-Agent": USER_AGENT}
 
                 async with httpx.AsyncClient(timeout=10.0) as client:
                     response = await client.get(url, headers=headers)
@@ -1263,6 +1265,7 @@ class EnhancedMultiOrgMerakiServer:
 
             headers = {
                 "X-Cisco-Meraki-API-Key": api_key,
+                "User-Agent": USER_AGENT,
                 "Content-Type": "application/json"
             }
 
@@ -1412,6 +1415,7 @@ class EnhancedMultiOrgMerakiServer:
                     url = f"{self.config['base_url']}/organizations"
                     headers = {
                         "X-Cisco-Meraki-API-Key": api_key,
+                        "User-Agent": USER_AGENT,
                         "Content-Type": "application/json"
                     }
 
@@ -1546,7 +1550,9 @@ class EnhancedMultiOrgMerakiServer:
                     if name in ["list_networks", "search_client_by_mac"]:
                         # Get organization details to find the org ID
                         org_url = f"{self.config['base_url']}/organizations"
-                        headers = {"X-Cisco-Meraki-API-Key": api_key, "Content-Type": "application/json"}
+                        headers = {"X-Cisco-Meraki-API-Key": api_key,
+                                   "User-Agent": USER_AGENT,
+                                   "Content-Type": "application/json"}
 
                         async with httpx.AsyncClient(verify=True, timeout=30.0) as client:
                             org_response = await client.get(org_url, headers=headers)
@@ -1594,6 +1600,7 @@ class EnhancedMultiOrgMerakiServer:
                     # Make API call
                     headers = {
                         "X-Cisco-Meraki-API-Key": api_key,
+                        "User-Agent": USER_AGENT,
                         "Content-Type": "application/json"
                     }
 

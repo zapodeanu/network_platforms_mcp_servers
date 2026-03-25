@@ -50,6 +50,7 @@ load_dotenv(os.path.join(PATH, 'environment.env'))
 CC_URL = os.getenv('CC_URL')
 CC_USER = os.getenv('CC_USER')
 CC_PASS = os.getenv('CC_PASS')
+USER_AGENT = "gz-mcp"
 
 # Ensure logs directory exists
 os.makedirs(os.path.join(PATH, "logs"), exist_ok=True)
@@ -95,7 +96,8 @@ class CatalystCenterTokenManager:
 
             headers = {
                 "Authorization": f"Basic {credentials}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": USER_AGENT
             }
 
             async with httpx.AsyncClient(verify=False, timeout=30.0) as client:
@@ -972,7 +974,8 @@ class EnhancedDeclarativeCatalystServer:
 
                 headers = {
                     "X-Auth-Token": token,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "User-Agent": USER_AGENT
                 }
 
                 async with httpx.AsyncClient(verify=False, timeout=30.0) as client:
@@ -1165,7 +1168,8 @@ class EnhancedDeclarativeCatalystServer:
                 # Make API call
                 headers = {
                     "X-Auth-Token": token,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "User-Agent": USER_AGENT
                 }
 
                 # Add custom header parameters

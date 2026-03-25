@@ -36,6 +36,7 @@ load_dotenv(os.path.join(PATH, 'environment.env'))
 # Meraki API Key
 MERAKI_API_KEY = os.getenv('MERAKI_API_KEY')
 MERAKI_BASE_URL = "https://api.meraki.com/api/v1"
+USER_AGENT = "gz-mcp"
 
 
 # Create new multi-org MCP server, with the provided name
@@ -118,7 +119,8 @@ async def call_tool(tool_name: str, arguments: dict):
             for name, config in ORGANIZATIONS.items():
                 headers = {
                     'X-Cisco-Meraki-API-Key': config['api_key'],
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'User-Agent': USER_AGENT
                 }
                 async with httpx.AsyncClient() as client:
                     response = await client.get(f"{MERAKI_BASE_URL}/organizations", headers=headers)
@@ -130,7 +132,8 @@ async def call_tool(tool_name: str, arguments: dict):
             api_key = ORGANIZATIONS[org_name]['api_key']
             headers = {
                 'X-Cisco-Meraki-API-Key': api_key,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-Agent': USER_AGENT
             }
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{MERAKI_BASE_URL}/organizations", headers=headers)
@@ -143,7 +146,8 @@ async def call_tool(tool_name: str, arguments: dict):
 
         headers = {
             'X-Cisco-Meraki-API-Key': api_key,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'User-Agent': USER_AGENT
         }
 
         # First get org details to find org_id
