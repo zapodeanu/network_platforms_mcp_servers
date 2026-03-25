@@ -42,6 +42,10 @@ from mcp.types import CallToolResult, ListToolsResult, Tool, TextContent
 
 # Get the directory where this script is located
 PATH = os.path.dirname(os.path.abspath(__file__))
+MODEL_NAME = "all-MiniLM-L6-v2"
+# Force transformers/huggingface libraries into offline mode.
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
 
 # Load environment file from the same directory as the script
 load_dotenv(os.path.join(PATH, 'environment.env'))
@@ -268,7 +272,7 @@ class MerakiAPIExplorer:
 
     def __init__(self, swagger_file_path: str = None, cache_dir: str = None):
         self.swagger_file_path = swagger_file_path or f"{PATH}/Resources/meraki_swagger.json"
-        self.cache_dir = cache_dir or f"{PATH}/embedding_cache"
+        self.cache_dir = cache_dir or f"{PATH}/embeddings_cache"
         self.model = None
         self.embeddings_data = []
         self._initialize()
@@ -277,12 +281,30 @@ class MerakiAPIExplorer:
         """Initialize the sentence transformer model and load/build embeddings"""
         logging.info("Initializing cosine similarity Meraki API explorer...")
 
-        # Load sentence transformer model
-        try:
-            self.model = SentenceTransformer('all-MiniLM-L6-v2')
-            logging.info("Sentence transformer model loaded")
-        except Exception as e:
-            logging.error(f"Failed to load sentence transformer: {e}")
+        model_path_candidates = [
+            os.getenv("SENTENCE_TRANSFORMERS_MODEL_DIR"),
+            os.path.join(PATH, "embeddings_cache", "model", MODEL_NAME),
+        ]
+
+        # Load sentence transformer model from local paths only (offline).
+        for model_path in model_path_candidates:
+            if not model_path:
+                continue
+            if not os.path.exists(model_path):
+                continue
+            try:
+                self.model = SentenceTransformer(model_path, local_files_only=True)
+                logging.info(f"Sentence transformer model loaded from local path: {model_path}")
+                break
+            except Exception as e:
+                logging.warning(f"Failed loading model from local path '{model_path}': {e}")
+
+        if not self.model:
+            logging.error(
+                "No local sentence transformer model found. "
+                "Set SENTENCE_TRANSFORMERS_MODEL_DIR or install %s under embeddings_cache/model.",
+                MODEL_NAME,
+            )
             return
 
         # Load or build embeddings

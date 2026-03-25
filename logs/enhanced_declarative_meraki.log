@@ -12,3 +12,8 @@
 2025-11-10 15:22:10,032 - PID:73941 - ERROR - No Meraki API keys found in environment
 2025-11-10 15:22:10,032 - PID:73941 - ERROR - No Meraki organizations configured. Please check your API keys and configuration.
 2025-11-10 15:22:10,032 - PID:73941 - ERROR - Server crashed: No Meraki organizations available. Check API keys and configuration.
+2026-03-25 16:29:09,013 - PID:2710 - INFO - ================================================================================
+2026-03-25 16:29:09,013 - PID:2710 - INFO - Enhanced Declarative Meraki Server with Complete API Explorer Started
+2026-03-25 16:29:09,013 - PID:2710 - INFO - Process ID: 2710
+2026-03-25 16:29:09,013 - PID:2710 - INFO - Meraki Base URL: https://api.meraki.com/api/v1
+2026-03-25 16:29:09,013 - PID:2710 - INFO - ================================================================================

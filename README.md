@@ -57,6 +57,10 @@ The following wrappers expose the same toolsets over streamable HTTP transport:
 
    Create `environment.env` with your API keys and endpoints
 
+   If you use API explorer features, also configure local sentence-transformer model access:
+   - Set `SENTENCE_TRANSFORMERS_MODEL_DIR` to a local `all-MiniLM-L6-v2` folder, or
+   - Place the model at `embeddings_cache/model/all-MiniLM-L6-v2` in this repo.
+
 3. **Run Servers**
 
    Validate the servers are running local. They can be started as subprocesses by an MCP client.
@@ -80,6 +84,13 @@ The following wrappers expose the same toolsets over streamable HTTP transport:
 - `meraki_config.yaml` - Meraki API endpoints and parameters
 - `catalyst_config.yaml` - Catalyst Center API endpoints and parameters
 - `requirements.txt` - Python dependencies including MCP, API clients, ML libraries
+
+### API Explorer Swagger Files
+
+- `Resources/meraki_swagger.json` - Meraki OpenAPI/Swagger source used by `enhanced_declarative_meraki.py` explorer features
+- `Resources/cc_swagger.json` - Catalyst Center OpenAPI/Swagger source used by `enhanced_declarative_catalyst.py` explorer features
+
+These files are used for endpoint discovery, similarity search, endpoint metadata, and explorer analytics workflows.
 
 ### Multi-Environment Setup
 
