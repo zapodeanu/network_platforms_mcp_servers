@@ -19,8 +19,8 @@ The following three servers demonstrate MCP development from simple to multi-org
 - **Features**: Three tools including a discovery tool, support for multiple orgs (Prod, Lab, or all), external org config via `meraki_organizations.yaml`
 - **Use Case**: Shows how to scale MCP servers across multiple environments with per-org API keys and an "all" aggregation pattern
 
-### Proof-of-Concepts Servers
-The following two proof-of-concepts servers demonstrate auto-generation of MCP tools and management of multiple Catalyst Center Clusters and multiple Meraki Organizations
+### Proof-of-Concept Servers
+The following two proof-of-concept servers demonstrate auto-generation of MCP tools and management of multiple Catalyst Center clusters and multiple Meraki organizations.
 ### Meraki MCP Server (`enhanced_declarative_meraki.py`)
 - **Purpose**: Cisco Meraki cloud-managed network automation
 - **Features**: Multi-organization support, device management, client tracking, network configuration
@@ -32,6 +32,19 @@ The following two proof-of-concepts servers demonstrate auto-generation of MCP t
 - **Features**: Device inventory, compliance checking, issue tracking, configuration management
 - **API Coverage**: Sites, devices, clients, assurance data, operations
 - **API Explorer**: Use Catalyst Center API specs file for Cosine search of APIs. Identify APIs, call the APIs, provide API docs and API telemetry. Restricted to only call GET API endpoints.
+
+### Remote Streamable HTTP Servers
+The following wrappers expose the same toolsets over streamable HTTP transport:
+
+### Meraki Remote MCP Server (`enhanced_meraki_remote.py`)
+- **Purpose**: Remote HTTP wrapper for `enhanced_declarative_meraki.py`
+- **Transport**: Streamable HTTP on `/mcp` (default port `8001`)
+- **API Explorer Safety**: Read-only explorer behavior inherited from declarative server (GET-only)
+
+### Catalyst Remote MCP Server (`enhanced_catalyst_remote.py`)
+- **Purpose**: Remote HTTP wrapper for `enhanced_declarative_catalyst.py`
+- **Transport**: Streamable HTTP on `/mcp` (default port `8000`)
+- **API Explorer Safety**: Read-only explorer behavior inherited from declarative server (GET-only; no POST/PUT/DELETE)
 
 ## Quick Start
 
@@ -46,11 +59,19 @@ The following two proof-of-concepts servers demonstrate auto-generation of MCP t
 
 3. **Run Servers**
 
-   Validate the servers are running local. They will be started as subprocesses by the MCP Client
+   Validate the servers are running local. They can be started as subprocesses by an MCP client.
       ```bash
       python enhanced_declarative_meraki.py
       python enhanced_declarative_catalyst.py
       ```
+
+4. **Run Remote Streamable HTTP Wrappers** (optional)
+
+   Use these when your MCP client connects over HTTP instead of stdio:
+   ```bash
+   python enhanced_meraki_remote.py --host 0.0.0.0 --port 8001
+   python enhanced_catalyst_remote.py --host 0.0.0.0 --port 8000
+   ```
 
 ## Configuration
 
