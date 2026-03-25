@@ -1,0 +1,23 @@
+2026-03-25 16:54:55,253 - PID:7088 - INFO - ================================================================================
+2026-03-25 16:54:55,253 - PID:7088 - INFO - Enhanced Catalyst Remote Server Started
+2026-03-25 16:54:55,253 - PID:7088 - INFO - Process ID: 7088
+2026-03-25 16:54:55,253 - PID:7088 - INFO - ================================================================================
+2026-03-25 16:54:55,253 - PID:7088 - INFO - Initializing Enhanced Declarative Catalyst Server...
+2026-03-25 16:54:55,253 - PID:7088 - INFO - Loading Catalyst Center clusters configuration...
+2026-03-25 16:54:55,253 - PID:7088 - ERROR - Clusters config file not found: /Users/gzapodea/Code/network_platforms_mcp_servers/Resources/catalyst_center_clusters.yaml
+2026-03-25 16:54:55,270 - PID:7088 - INFO - Loaded config with 22 declarative tools
+2026-03-25 16:54:55,270 - PID:7088 - INFO - Initializing cosine similarity API explorer...
+2026-03-25 16:54:55,280 - PID:7088 - INFO - Use pytorch device_name: mps
+2026-03-25 16:54:55,280 - PID:7088 - INFO - Load pretrained SentenceTransformer: /Users/gzapodea/Code/network_platforms_mcp_servers/embeddings_cache/model/all-MiniLM-L6-v2
+2026-03-25 16:54:55,281 - PID:7088 - WARNING - You are trying to use a model that was created with Sentence Transformers version 5.3.0, but you're currently using version 5.1.2. This might cause unexpected behavior or errors. In that case, try to update to the latest version.
+2026-03-25 16:54:55,367 - PID:7088 - INFO - Sentence transformer model loaded from local path: /Users/gzapodea/Code/network_platforms_mcp_servers/embeddings_cache/model/all-MiniLM-L6-v2
+2026-03-25 16:54:55,368 - PID:7088 - INFO - Loading cached embeddings from: /Users/gzapodea/Code/network_platforms_mcp_servers/embeddings_cache/catalyst_embeddings_1756405539.pkl
+2026-03-25 16:54:55,370 - PID:7088 - INFO - Loaded 640 cached embeddings
+2026-03-25 16:54:55,370 - PID:7088 - INFO - Setting up enhanced MCP server handlers...
+2026-03-25 16:54:55,370 - PID:7088 - INFO - Enhanced MCP server handlers registered
+2026-03-25 16:54:55,370 - PID:7088 - INFO - Enhanced Declarative Catalyst Server ready!
+2026-03-25 16:54:55,370 - PID:7088 - INFO - Starting enhanced remote Catalyst MCP server on http://0.0.0.0:8000/mcp
+2026-03-25 16:54:55,380 - PID:7088 - INFO - StreamableHTTP session manager started
+2026-03-25 16:54:55,380 - PID:7088 - INFO - MCP streamable HTTP session manager started
+2026-03-25 16:54:55,380 - PID:7088 - INFO - MCP streamable HTTP session manager stopped
+2026-03-25 16:54:55,380 - PID:7088 - INFO - StreamableHTTP session manager shutting down

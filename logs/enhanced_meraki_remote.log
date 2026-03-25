@@ -1,0 +1,31 @@
+2026-03-25 16:55:10,371 - PID:7126 - INFO - ================================================================================
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Enhanced Meraki Remote Server Started
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Process ID: 7126
+2026-03-25 16:55:10,371 - PID:7126 - INFO - ================================================================================
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Initializing Enhanced Declarative Meraki Server...
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Loading Meraki API keys from environment...
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Loaded API key for: MERAKI_PROD_API_KEY
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Loaded API key for: MERAKI_LAB_API_KEY
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Successfully loaded 2 Meraki API keys
+2026-03-25 16:55:10,371 - PID:7126 - INFO - Loading Meraki organizations configuration...
+2026-03-25 16:55:10,372 - PID:7126 - INFO - API key found for organization 'Production'
+2026-03-25 16:55:10,372 - PID:7126 - INFO - Loaded organization: Production
+2026-03-25 16:55:10,372 - PID:7126 - INFO - API key found for organization 'Lab'
+2026-03-25 16:55:10,372 - PID:7126 - INFO - Loaded organization: Lab
+2026-03-25 16:55:10,372 - PID:7126 - INFO - Successfully loaded 2 Meraki organizations
+2026-03-25 16:55:10,377 - PID:7126 - INFO - Loaded your existing config with 9 declarative tools
+2026-03-25 16:55:10,377 - PID:7126 - INFO - Initializing cosine similarity Meraki API explorer...
+2026-03-25 16:55:10,388 - PID:7126 - INFO - Use pytorch device_name: mps
+2026-03-25 16:55:10,388 - PID:7126 - INFO - Load pretrained SentenceTransformer: /Users/gzapodea/Code/network_platforms_mcp_servers/embeddings_cache/model/all-MiniLM-L6-v2
+2026-03-25 16:55:10,389 - PID:7126 - WARNING - You are trying to use a model that was created with Sentence Transformers version 5.3.0, but you're currently using version 5.1.2. This might cause unexpected behavior or errors. In that case, try to update to the latest version.
+2026-03-25 16:55:10,489 - PID:7126 - INFO - Sentence transformer model loaded from local path: /Users/gzapodea/Code/network_platforms_mcp_servers/embeddings_cache/model/all-MiniLM-L6-v2
+2026-03-25 16:55:10,489 - PID:7126 - INFO - Loading cached Meraki embeddings from: /Users/gzapodea/Code/network_platforms_mcp_servers/embeddings_cache/meraki_embeddings_1757545370.pkl
+2026-03-25 16:55:10,492 - PID:7126 - INFO - Loaded 466 cached embeddings
+2026-03-25 16:55:10,493 - PID:7126 - INFO - Setting up Enhanced Declarative MCP server handlers...
+2026-03-25 16:55:10,493 - PID:7126 - INFO - Enhanced Declarative MCP server handlers registered
+2026-03-25 16:55:10,493 - PID:7126 - INFO - Enhanced Declarative Meraki Server ready!
+2026-03-25 16:55:10,493 - PID:7126 - INFO - Starting enhanced remote Meraki MCP server on http://0.0.0.0:8001/mcp
+2026-03-25 16:55:10,500 - PID:7126 - INFO - StreamableHTTP session manager started
+2026-03-25 16:55:10,500 - PID:7126 - INFO - MCP streamable HTTP session manager started
+2026-03-25 16:55:10,500 - PID:7126 - INFO - MCP streamable HTTP session manager stopped
+2026-03-25 16:55:10,500 - PID:7126 - INFO - StreamableHTTP session manager shutting down
