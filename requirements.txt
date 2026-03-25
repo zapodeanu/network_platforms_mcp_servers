@@ -1,6 +1,8 @@
 requests
 urllib3
 mcp
+uvicorn
+starlette
 catalystcentersdk
 python-dotenv
 PyYAML
