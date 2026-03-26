@@ -29,7 +29,7 @@ The following three servers demonstrate MCP development from simple to multi-org
 
 ### Multi-Org Meraki MCP Server (`multiorg_meraki_mcp_server.py`)
 - **Purpose**: Multi-organization Meraki MCP server with YAML-driven org configuration
-- **Features**: Three tools including a discovery tool, support for multiple orgs (Prod, Lab, or all), external org config via `meraki_organizations.yaml`
+- **Features**: Three tools including a discovery tool, support for multiple orgs (Prod, Lab, or all), external org config via `Resources/meraki_organizations.yaml`
 - **Use Case**: Shows how to scale MCP servers across multiple environments with per-org API keys and an "all" aggregation pattern
 
 ### Proof-of-Concept Servers
@@ -116,6 +116,10 @@ Legacy shims are compatibility entrypoints only and route to the current stdio/c
 - `catalyst_config.yaml` - Catalyst Center API endpoints and parameters
 - `requirements.txt` - Python dependencies including MCP, API clients, ML libraries
 
+**Location note:** Runtime organization/cluster config files are loaded from the `Resources/` directory:
+- `Resources/meraki_organizations.yaml`
+- `Resources/catalyst_center_clusters.yaml`
+
 ### API Explorer Swagger Files
 
 - `Resources/meraki_swagger.json` - Meraki OpenAPI/Swagger source used by `meraki_core.py` explorer features
@@ -148,7 +152,7 @@ python download_model.py --model-name all-MiniLM-L6-v2
 
 ### Multi-Environment Setup
 
-**`meraki_organizations.yaml`** - Configure multiple Meraki organizations:
+**`Resources/meraki_organizations.yaml`** - Configure multiple Meraki organizations:
 ```yaml
 meraki_organizations:
   - name: "Production"
@@ -161,7 +165,7 @@ meraki_organizations:
     enabled: true
 ```
 
-**`catalyst_center_clusters.yaml`** - Configure multiple Catalyst Center clusters:
+**`Resources/catalyst_center_clusters.yaml`** - Configure multiple Catalyst Center clusters:
 ```yaml
 catalyst_centers:
   - name: "Portland"
