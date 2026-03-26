@@ -2,6 +2,19 @@
 
 This project is an open-source, published as is. It is not intended to be used in production.
 
+## File Structure (Core + Transport Wrappers)
+
+Legacy stdio shims (deprecated, still supported):
+
+- `enhanced_declarative_catalyst.py` -> use `catalyst_center_stdio.py`
+- `enhanced_declarative_meraki.py` -> use `meraki_stdio.py`
+
+Current suite (preferred):
+
+- `catalyst_center_core.py` / `meraki_core.py` - self-contained core logic
+- `catalyst_center_stdio.py` / `meraki_stdio.py` - stdio wrappers
+- `catalyst_center_remote.py` / `meraki_remote.py` - streamable HTTP wrappers
+
 ### Learning Progression Servers
 The following three servers demonstrate MCP development from simple to multi-organization patterns:
 ### Basic Meraki MCP Server (`basic_meraki_mcp_server.py`)
@@ -21,13 +34,13 @@ The following three servers demonstrate MCP development from simple to multi-org
 
 ### Proof-of-Concept Servers
 The following two proof-of-concept servers demonstrate auto-generation of MCP tools and management of multiple Catalyst Center clusters and multiple Meraki organizations.
-### Meraki MCP Server (`enhanced_declarative_meraki.py`)
+### Meraki MCP Server (`meraki_stdio.py`)
 - **Purpose**: Cisco Meraki cloud-managed network automation
 - **Features**: Multi-organization support, device management, client tracking, network configuration
 - **API Coverage**: Organizations, networks, devices, clients, security policies
 - **API Explorer**: Use Meraki API specs file for Cosine search of APIs. Identify APIs, call the APIs, provide API docs and API telemetry. Restricted to only call GET API endpoints.
 
-### Catalyst Center MCP Server (`enhanced_declarative_catalyst.py`)  
+### Catalyst Center MCP Server (`catalyst_center_stdio.py`)  
 - **Purpose**: Cisco Catalyst Center on-premises network automation
 - **Features**: Device inventory, compliance checking, issue tracking, configuration management
 - **API Coverage**: Sites, devices, clients, assurance data, operations
@@ -36,15 +49,21 @@ The following two proof-of-concept servers demonstrate auto-generation of MCP to
 ### Remote Streamable HTTP Servers
 The following wrappers expose the same toolsets over streamable HTTP transport:
 
-### Meraki Remote MCP Server (`enhanced_meraki_remote.py`)
-- **Purpose**: Remote HTTP wrapper for `enhanced_declarative_meraki.py`
+**Wrapper architecture note:** Remote servers in this repo are thin transport wrappers over the `_core` servers (`meraki_core.py` and `catalyst_center_core.py`).  
+All tool logic (including API explorer safety rules and method restrictions) lives in `_core`, which keeps stdio and remote behavior in sync.  
+Legacy shims are compatibility entrypoints only and route to the current stdio/core flow.
+
+### Meraki Remote MCP Server (`meraki_remote.py`)
+- **Purpose**: Remote HTTP wrapper for `meraki_core.py`
 - **Transport**: Streamable HTTP on `/mcp` (default port `8001`)
 - **API Explorer Safety**: Read-only explorer behavior inherited from declarative server (GET-only)
+- **Sync Model**: Inherits declarative server logic (no duplicated execution engine)
 
-### Catalyst Remote MCP Server (`enhanced_catalyst_remote.py`)
-- **Purpose**: Remote HTTP wrapper for `enhanced_declarative_catalyst.py`
+### Catalyst Remote MCP Server (`catalyst_center_remote.py`)
+- **Purpose**: Remote HTTP wrapper for `catalyst_center_core.py`
 - **Transport**: Streamable HTTP on `/mcp` (default port `8000`)
 - **API Explorer Safety**: Read-only explorer behavior inherited from declarative server (GET-only; no POST/PUT/DELETE)
+- **Sync Model**: Inherits declarative server logic (no duplicated execution engine)
 
 ## Quick Start
 
@@ -57,24 +76,36 @@ The following wrappers expose the same toolsets over streamable HTTP transport:
 
    Create `environment.env` with your API keys and endpoints
 
-   If you use API explorer features, also configure local sentence-transformer model access:
+   If you use API explorer features, configure local sentence-transformer model access:
    - Set `SENTENCE_TRANSFORMERS_MODEL_DIR` to a local `all-MiniLM-L6-v2` folder, or
    - Place the model at `embeddings_cache/model/all-MiniLM-L6-v2` in this repo.
+
+   You can populate the local model cache with:
+   ```bash
+   python download_model.py
+   ```
 
 3. **Run Servers**
 
    Validate the servers are running local. They can be started as subprocesses by an MCP client.
       ```bash
-      python enhanced_declarative_meraki.py
-      python enhanced_declarative_catalyst.py
+      python meraki_stdio.py
+      python catalyst_center_stdio.py
       ```
 
 4. **Run Remote Streamable HTTP Wrappers** (optional)
 
    Use these when your MCP client connects over HTTP instead of stdio:
    ```bash
-   python enhanced_meraki_remote.py --host 0.0.0.0 --port 8001
-   python enhanced_catalyst_remote.py --host 0.0.0.0 --port 8000
+   python meraki_remote.py --host 0.0.0.0 --port 8001
+   python catalyst_center_remote.py --host 0.0.0.0 --port 8000
+   ```
+
+5. **Legacy Stdio Shims (Deprecated but Supported)**
+
+   ```bash
+   python enhanced_declarative_meraki.py
+   python enhanced_declarative_catalyst.py
    ```
 
 ## Configuration
@@ -87,14 +118,33 @@ The following wrappers expose the same toolsets over streamable HTTP transport:
 
 ### API Explorer Swagger Files
 
-- `Resources/meraki_swagger.json` - Meraki OpenAPI/Swagger source used by `enhanced_declarative_meraki.py` explorer features
-- `Resources/cc_swagger.json` - Catalyst Center OpenAPI/Swagger source used by `enhanced_declarative_catalyst.py` explorer features
+- `Resources/meraki_swagger.json` - Meraki OpenAPI/Swagger source used by `meraki_core.py` explorer features
+- `Resources/cc_swagger.json` - Catalyst Center OpenAPI/Swagger source used by `catalyst_center_core.py` explorer features
 
 These files are used for endpoint discovery, similarity search, endpoint metadata, and explorer analytics workflows.
+
+**Note:** API explorer auto-discovery and dynamic execution are intentionally restricted to `GET` endpoints only.  
+`POST`/`PUT`/`DELETE` operations are not auto-generated by explorer tools and must be executed only through explicit declarative tools defined in YAML.
+
+### Transformer Model Resource
+
+- Local model cache base directory: `embeddings_cache/`
+- Expected model path: `embeddings_cache/model/all-MiniLM-L6-v2`
+- Model download helper: `download_model.py`
+
+Example:
+```bash
+python download_model.py --model-name all-MiniLM-L6-v2
+```
 
 ### Tool Catalog
 
 - `Resources/MCP_Tools.md` - Markdown catalog of declarative and explorer tools for both Catalyst Center and Meraki servers
+
+### Logging
+
+- `logs/catalyst_center_mcp.log`
+- `logs/meraki_mcp.log`
 
 ### Multi-Environment Setup
 
@@ -151,23 +201,46 @@ Key packages from `requirements.txt`:
 
 ## Claude Desktop Configuration
 
-Add to your Claude Desktop `claude_desktop_config.json`:
+### Stdio
 
 ```json
 {
   "mcpServers": {
-    "enhanced_declarative_meraki": {
+    "meraki_stdio": {
       "command": "/path/to/your/venv/bin/python3",
-      "args": ["/path/to/your/enhanced_declarative_meraki.py"]
+      "args": ["/path/to/your/meraki_stdio.py"]
     },
-    "enhanced_declarative_catalyst": {
-      "command": "/path/to/your/venv/bin/python3", 
-      "args": ["/path/to/your/enhanced_declarative_catalyst.py"]
+    "catalyst_center_stdio": {
+      "command": "/path/to/your/venv/bin/python3",
+      "args": ["/path/to/your/catalyst_center_stdio.py"]
     }
   }
 }
 ```
 
 **Note**: Update the paths to match your actual Python virtual environment and script locations.
+
+### Remote (Streamable HTTP)
+
+Add to your Claude Desktop `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "meraki_remote": {
+      "url": "http://127.0.0.1:8001/mcp"
+    },
+    "catalyst_center_remote": {
+      "url": "http://127.0.0.1:8000/mcp"
+    }
+  }
+}
+```
+
+Start remote servers first:
+```bash
+python meraki_remote.py --host 0.0.0.0 --port 8001
+python catalyst_center_remote.py --host 0.0.0.0 --port 8000
+```
 
 Each server provides declarative tools plus AI-powered API exploration for complete network automation capabilities.

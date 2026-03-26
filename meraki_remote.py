@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Enhanced Declarative Meraki remote MCP server
-Streamable HTTP transport wrapper around enhanced_declarative_meraki.py
+Meraki streamable HTTP entrypoint.
+Do not add tool logic here; keep logic in meraki_core.py.
 """
 
 import argparse
@@ -18,37 +18,16 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from starlette.routing import Mount
 
-from enhanced_declarative_meraki import EnhancedMultiOrgMerakiServer, PATH
+from meraki_core import EnhancedMultiOrgMerakiServer, PATH
 
-# Ensure logs directory exists
 os.makedirs(os.path.join(PATH, "logs"), exist_ok=True)
-
-# Configure logging for remote server
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - PID:%(process)d - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(os.path.join(PATH, "logs/enhanced_meraki_remote.log"), mode="a"),
-    ],
-    force=True,
-)
-
-logging.info("=" * 80)
-logging.info("Enhanced Meraki Remote Server Started")
-logging.info("Process ID: %s", os.getpid())
-logging.info("=" * 80)
+WRAPPER_LOGGER = logging.getLogger("meraki_remote_wrapper")
 
 
-class EnhancedMerakiRemoteServer(EnhancedMultiOrgMerakiServer):
-    """Remote streamable HTTP version of the enhanced Meraki server."""
-
-    def __init__(self):
-        super().__init__()
+class MerakiRemoteServer(EnhancedMultiOrgMerakiServer):
+    """Remote streamable HTTP transport wrapper."""
 
     async def run(self, host: str = "0.0.0.0", port: int = 8001):
-        """Run the remote MCP server over streamable HTTP."""
-        logging.info("Starting enhanced remote Meraki MCP server on http://%s:%s/mcp", host, port)
-
         session_manager = StreamableHTTPSessionManager(
             app=self.server,
             json_response=False,
@@ -61,11 +40,7 @@ class EnhancedMerakiRemoteServer(EnhancedMultiOrgMerakiServer):
         @contextlib.asynccontextmanager
         async def lifespan(app: Starlette) -> AsyncIterator[None]:
             async with session_manager.run():
-                logging.info("MCP streamable HTTP session manager started")
-                try:
-                    yield
-                finally:
-                    logging.info("MCP streamable HTTP session manager stopped")
+                yield
 
         app = Starlette(
             debug=False,
@@ -90,7 +65,7 @@ class EnhancedMerakiRemoteServer(EnhancedMultiOrgMerakiServer):
 
         @app.route("/health")
         async def health(request):
-            return JSONResponse({"status": "ok", "server": "enhanced_meraki_remote"})
+            return JSONResponse({"status": "ok", "server": "meraki_mcp_remote"})
 
         config = uvicorn.Config(app_no_redirect, host=host, port=port, log_level="info")
         server = uvicorn.Server(config)
@@ -98,13 +73,14 @@ class EnhancedMerakiRemoteServer(EnhancedMultiOrgMerakiServer):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Enhanced Meraki Remote MCP Server")
+    parser = argparse.ArgumentParser(description="Meraki Remote MCP Server")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=8001, help="Port to listen on (default: 8001)")
     args = parser.parse_args()
 
     try:
-        asyncio.run(EnhancedMerakiRemoteServer().run(host=args.host, port=args.port))
+        WRAPPER_LOGGER.info("Starting wrapper: meraki_remote.py -> meraki_mcp (streamable_http)")
+        asyncio.run(MerakiRemoteServer().run(host=args.host, port=args.port))
     except Exception as e:
-        logging.error("Server crashed: %s", str(e))
+        WRAPPER_LOGGER.error("Server crashed: %s", str(e))
         raise

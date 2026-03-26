@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Enhanced Declarative Catalyst Center remote MCP server
-Streamable HTTP transport wrapper around enhanced_declarative_catalyst.py
+Catalyst Center streamable HTTP entrypoint.
+Do not add tool logic here; keep logic in catalyst_center_core.py.
 """
 
 import argparse
 import asyncio
 import contextlib
+import json
 import logging
 import os
 from collections.abc import AsyncIterator
@@ -18,37 +19,29 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from starlette.routing import Mount
 
-from enhanced_declarative_catalyst import EnhancedDeclarativeCatalystServer, PATH
+from catalyst_center_core import EnhancedDeclarativeCatalystServer, PATH
 
-# Ensure logs directory exists
 os.makedirs(os.path.join(PATH, "logs"), exist_ok=True)
-
-# Configure logging for remote server
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - PID:%(process)d - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(os.path.join(PATH, "logs/enhanced_catalyst_remote.log"), mode="a"),
-    ],
-    force=True,
-)
-
-logging.info("=" * 80)
-logging.info("Enhanced Catalyst Remote Server Started")
-logging.info("Process ID: %s", os.getpid())
-logging.info("=" * 80)
+WRAPPER_LOGGER = logging.getLogger("catalyst_center_remote_wrapper")
 
 
-class EnhancedCatalystRemoteServer(EnhancedDeclarativeCatalystServer):
-    """Remote streamable HTTP version of the enhanced Catalyst server."""
+class CatalystCenterRemoteServer(EnhancedDeclarativeCatalystServer):
+    """Remote streamable HTTP transport wrapper."""
 
-    def __init__(self):
-        super().__init__()
+    async def _handle_execute_explored_endpoint(self, arguments: dict):
+        method = arguments.get("method", "GET").upper()
+        if method != "GET":
+            error_response = {
+                "error": "Security restriction: Only GET methods allowed",
+                "provided_method": method,
+                "allowed_methods": ["GET"],
+                "reason": "Write operations (POST/PUT/DELETE) are disabled for safety",
+                "suggestion": "Use existing YAML tools for configuration changes",
+            }
+            return {"content": [{"type": "text", "text": json.dumps(error_response, indent=2)}]}
+        return await super()._handle_execute_explored_endpoint(arguments)
 
     async def run(self, host: str = "0.0.0.0", port: int = 8000):
-        """Run the remote MCP server over streamable HTTP."""
-        logging.info("Starting enhanced remote Catalyst MCP server on http://%s:%s/mcp", host, port)
-
         session_manager = StreamableHTTPSessionManager(
             app=self.server,
             json_response=False,
@@ -61,11 +54,7 @@ class EnhancedCatalystRemoteServer(EnhancedDeclarativeCatalystServer):
         @contextlib.asynccontextmanager
         async def lifespan(app: Starlette) -> AsyncIterator[None]:
             async with session_manager.run():
-                logging.info("MCP streamable HTTP session manager started")
-                try:
-                    yield
-                finally:
-                    logging.info("MCP streamable HTTP session manager stopped")
+                yield
 
         app = Starlette(
             debug=False,
@@ -90,7 +79,7 @@ class EnhancedCatalystRemoteServer(EnhancedDeclarativeCatalystServer):
 
         @app.route("/health")
         async def health(request):
-            return JSONResponse({"status": "ok", "server": "enhanced_catalyst_remote"})
+            return JSONResponse({"status": "ok", "server": "catalyst_center_mcp_remote"})
 
         config = uvicorn.Config(app_no_redirect, host=host, port=port, log_level="info")
         server = uvicorn.Server(config)
@@ -98,13 +87,14 @@ class EnhancedCatalystRemoteServer(EnhancedDeclarativeCatalystServer):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Enhanced Catalyst Remote MCP Server")
+    parser = argparse.ArgumentParser(description="Catalyst Center Remote MCP Server")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=8000, help="Port to listen on (default: 8000)")
     args = parser.parse_args()
 
     try:
-        asyncio.run(EnhancedCatalystRemoteServer().run(host=args.host, port=args.port))
+        WRAPPER_LOGGER.info("Starting wrapper: catalyst_center_remote.py -> catalyst_center_mcp (streamable_http)")
+        asyncio.run(CatalystCenterRemoteServer().run(host=args.host, port=args.port))
     except Exception as e:
-        logging.error("Server crashed: %s", str(e))
+        WRAPPER_LOGGER.error("Server crashed: %s", str(e))
         raise
