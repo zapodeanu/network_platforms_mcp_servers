@@ -92,6 +92,10 @@ The following wrappers expose the same toolsets over streamable HTTP transport:
 
 These files are used for endpoint discovery, similarity search, endpoint metadata, and explorer analytics workflows.
 
+### Tool Catalog
+
+- `Resources/MCP_Tools.md` - Markdown catalog of declarative and explorer tools for both Catalyst Center and Meraki servers
+
 ### Multi-Environment Setup
 
 **`meraki_organizations.yaml`** - Configure multiple Meraki organizations:
