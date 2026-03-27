@@ -8,7 +8,7 @@ Do not add tool logic here; keep logic in meraki_core.py.
 import asyncio
 import logging
 
-from meraki_core import EnhancedMultiOrgMerakiServer
+from meraki_stdio import _run_stdio
 
 shim_logger = logging.getLogger("meraki_stdio_legacy_shim")
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
             "DEPRECATION: 'enhanced_declarative_meraki.py' is a legacy stdio entrypoint. "
             "Use 'meraki_stdio.py' going forward."
         )
-        asyncio.run(EnhancedMultiOrgMerakiServer().run())
+        asyncio.run(_run_stdio())
     except Exception as e:
         shim_logger.error("Server crashed: %s", str(e))
         raise

@@ -35,9 +35,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from mcp.server import Server, NotificationOptions
-from mcp.server.models import InitializationOptions
-from mcp.server.stdio import stdio_server
+from mcp.server import Server
 from mcp.types import CallToolResult, ListToolsResult, Tool, TextContent
 
 # Get the directory where this script is located
@@ -1261,19 +1259,3 @@ class EnhancedDeclarativeCatalystServer:
 
         return {'content': [{'type': 'text', 'text': json.dumps(final_result, indent=2)}]}
 
-    async def run(self):
-        """Run the Catalyst MCP server"""
-        logging.info("Starting Catalyst MCP server...")
-        async with stdio_server() as (read_stream, write_stream):
-            await self.server.run(
-                read_stream,
-                write_stream,
-                InitializationOptions(
-                    server_name="catalyst-center-mcp",
-                    server_version="2.1.0",
-                    capabilities=self.server.get_capabilities(
-                        notification_options=NotificationOptions(),
-                        experimental_capabilities={}
-                    )
-                )
-            )
