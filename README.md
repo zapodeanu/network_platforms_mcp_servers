@@ -3,6 +3,12 @@
 > Deprecation notice: `network_platforms_mcp_servers` is being deprecated.  
 > Please use the new repository: `https://github.com/zapodeanu/platforms-mcp-servers-oss`.
 
+## Migration
+
+- Move to `https://github.com/zapodeanu/platforms-mcp-servers-oss` for the current OSS version.
+- Prefer `*_core.py` + `*_stdio.py`/`*_remote.py` wrappers and curated YAML tools.
+- Legacy `declarative-*` entrypoints are deprecated.
+
 This project is an open-source, published as is. It is not intended to be used in production.
 
 ## File Structure (Core + Transport Wrappers)
