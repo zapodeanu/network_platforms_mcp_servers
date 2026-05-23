@@ -1,5 +1,8 @@
 ## Servers
 
+> Deprecation notice: `network_platforms_mcp_servers` is being deprecated.  
+> Please use the new repository: `https://github.com/zapodeanu/platforms-mcp-servers-oss`.
+
 This project is an open-source, published as is. It is not intended to be used in production.
 
 ## File Structure (Core + Transport Wrappers)
